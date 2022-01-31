@@ -6,8 +6,8 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
+	"net/url"
 )
 
 type CreatePr struct {
@@ -45,19 +45,40 @@ to quickly create a Cobra application.`,
 
 func (c *CreatePr) Run() error {
 	fmt.Println("create called")
+	// can we get information about this repo
+	gitter := DefaultGitter{}
+	remote, err := gitter.GetOrigin()
+	if err != nil {
+		return err
+	}
+	fmt.Println(remote)
+	remoteUrl, err := url.Parse(remote)
+	if err != nil {
+		return err
+	}
+
+	host := remoteUrl.Host
+	fmt.Println(host)
+
+	// determine if there are local changes
+	changes, err := gitter.HasLocalChanges()
+	if err != nil {
+		return err
+	}
+	fmt.Println(changes)
+
+	// what is the main branch for this repository
+
+	// are there any pull requests for this branch
+	gh := DefaultGitHub{}
+	b, err := gh.PullRequestForBranch(host, "garethjevans", "create-pr", "branch")
+	if err != nil {
+		return err
+	}
+	fmt.Println(b)
 	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(NewCreatePr().Command)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	//
 }
