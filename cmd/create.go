@@ -69,10 +69,16 @@ func (c *CreatePr) Run() error {
 	}
 	fmt.Println(changes)
 
+	gh := DefaultGitHub{}
 	// what is the main branch for this repository
+	defaultBranch, err := gh.DefaultBranch(host, org, repo)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(defaultBranch)
 
 	// are there any pull requests for this branch
-	gh := DefaultGitHub{}
 	b, err := gh.PullRequestForBranch(host, org, repo, c.Branch)
 	if err != nil {
 		return err
@@ -83,7 +89,7 @@ func (c *CreatePr) Run() error {
 	} else {
 		fmt.Println("No pull requests exist for this branch")
 	}
-	
+
 	return nil
 }
 
