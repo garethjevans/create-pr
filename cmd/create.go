@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"net/url"
+	"strings"
 )
 
 type CreatePr struct {
@@ -21,13 +22,8 @@ func NewCreatePr() CreatePr {
 	pr := CreatePr{}
 	pr.Command = &cobra.Command{
 		Use:   "create",
-		Short: "A brief description of your command",
-		Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+		Short: "creates a pull request with the local changes",
+		Long:  ``,
 		Run: func(cmd *cobra.Command, args []string) {
 			err := pr.Run()
 			if err != nil {
@@ -58,7 +54,13 @@ func (c *CreatePr) Run() error {
 	}
 
 	host := remoteUrl.Host
-	fmt.Println(host)
+	fmt.Println("host", host)
+	parts := strings.Split(remoteUrl.Path, "/")
+	org := parts[1]
+	repo := parts[2]
+
+	fmt.Println("org", org)
+	fmt.Println("repo", repo)
 
 	// determine if there are local changes
 	changes, err := gitter.HasLocalChanges()
@@ -71,7 +73,7 @@ func (c *CreatePr) Run() error {
 
 	// are there any pull requests for this branch
 	gh := DefaultGitHub{}
-	b, err := gh.PullRequestForBranch(host, "garethjevans", "create-pr", "branch")
+	b, err := gh.PullRequestForBranch(host, org, repo, "branch")
 	if err != nil {
 		return err
 	}
