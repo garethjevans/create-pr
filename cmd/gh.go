@@ -36,8 +36,14 @@ func (d DefaultGitHub) DefaultBranch(host string, org string, repo string) (stri
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
 	var r Repository
 	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return "", err
+	}
 	return r.DefaultBranch, nil
 }
 
@@ -50,8 +56,14 @@ func (d DefaultGitHub) PullRequestForBranch(host string, org string, repo string
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false, err
+	}
 	var prs []PullRequest
 	err = json.Unmarshal(b, &prs)
+	if err != nil {
+		return false, err
+	}
 	return len(prs) > 0, nil
 }
 
