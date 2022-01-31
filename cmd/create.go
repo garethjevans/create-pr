@@ -73,11 +73,17 @@ func (c *CreatePr) Run() error {
 
 	// are there any pull requests for this branch
 	gh := DefaultGitHub{}
-	b, err := gh.PullRequestForBranch(host, org, repo, "branch")
+	b, err := gh.PullRequestForBranch(host, org, repo, c.Branch)
 	if err != nil {
 		return err
 	}
-	fmt.Println(b)
+
+	if b {
+		fmt.Println("There is already a pull request for this branch")
+	} else {
+		fmt.Println("No pull requests exist for this branch")
+	}
+	
 	return nil
 }
 
