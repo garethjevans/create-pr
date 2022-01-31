@@ -28,8 +28,7 @@ type Repository struct {
 }
 
 func (d DefaultGitHub) DefaultBranch(host string, org string, repo string) (string, error) {
-	// FIXME need to implement host correctly
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", org, repo)
+	url := fmt.Sprintf("https://%s/repos/%s/%s", determineHost(host), org, repo)
 	resp, err := Getter().Get(url)
 	if err != nil {
 		return "", err
@@ -43,8 +42,7 @@ func (d DefaultGitHub) DefaultBranch(host string, org string, repo string) (stri
 }
 
 func (d DefaultGitHub) PullRequestForBranch(host string, org string, repo string, branch string) (bool, error) {
-	// FIXME need to implement host correctly
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls?head=%s:%s", org, repo, org, branch)
+	url := fmt.Sprintf("https://%s/repos/%s/%s/pulls?head=%s:%s", determineHost(host), org, repo, org, branch)
 	resp, err := Getter().Get(url)
 	if err != nil {
 		return false, err
@@ -63,4 +61,11 @@ type PullRequest struct {
 
 func getter() HttpGetter {
 	return &http.Client{}
+}
+
+func determineHost(h string) string {
+	if h == "github.com" {
+		return "api.github.com"
+	}
+	return fmt.Sprintf("%s/api/v3", h)
 }
