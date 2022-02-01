@@ -1,4 +1,4 @@
-package cmd
+package pkg
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 )
+
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . GitHub
 
 var _ GitHub = (*DefaultGitHub)(nil)
 

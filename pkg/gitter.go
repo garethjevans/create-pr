@@ -1,4 +1,4 @@
-package cmd
+package pkg
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 var _ Gitter = (*DefaultGitter)(nil)
 var Runner = ShellCommand
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . Gitter
 type Gitter interface {
 	GetOrigin() (string, error)
 	HasLocalChanges() (bool, error)
